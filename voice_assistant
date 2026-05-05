@@ -1,0 +1,75 @@
+import speech_recognition as sr
+import pyttsx3
+import datetime
+import webbrowser
+import os
+
+# إعداد الصوت
+engine = pyttsx3.init()
+engine.setProperty('rate', 150) # سرعة الكلام
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id) # صوت ذكر
+
+def speak(text):
+    print(f"المساعد: {text}")
+    engine.say(text)
+    engine.runAndWait()
+
+def listen():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("اسمعك...")
+        r.adjust_for_ambient_noise(source, duration=1)
+        audio = r.listen(source)
+    
+    try:
+        command = r.recognize_google(audio, language='ar-SA')
+        print(f"أنت قلت: {command}")
+        return command.lower()
+    except sr.UnknownValueError:
+        speak("ما فهمت، عيد مرة ثانية")
+        return ""
+    except sr.RequestError:
+        speak("فيه مشكلة في الاتصال")
+        return ""
+
+def run_assistant():
+    speak("مرحبا حسين، أنا مساعدك الصوتي. كيف أقدر أساعدك؟")
+    
+    while True:
+        command = listen()
+        
+        if 'الساعة' in command or 'الوقت' in command:
+            time = datetime.datetime.now().strftime("%I:%M %p")
+            speak(f"الساعة الحين {time}")
+        
+        elif 'يوتيوب' in command:
+            speak("أبشر، أفتح لك يوتيوب")
+            webbrowser.open("https://youtube.com")
+        
+        elif 'قوقل' in command or 'ابحث' in command:
+            speak("وش تبي أبحث لك عنه؟")
+            search = listen()
+            if search:
+                url = f"https://google.com/search?q={search}"
+                webbrowser.open(url)
+                speak(f"بحثت لك عن {search}")
+        
+        elif 'اسمك' in command:
+            speak("أنا مساعدك الصوتي، برمجة حسين البطل")
+        
+        elif 'كيف حالك' in command:
+            speak("الحمدلله بخير، وأنت كيفك يا بطل؟")
+        
+        elif 'شكرا' in command or 'مشكور' in command:
+            speak("العفو يا حسين، دايم في خدمتك")
+        
+        elif 'اقفل' in command or 'وقف' in command or 'اخرج' in command:
+            speak("تمام، مع السلامة يا حسين")
+            break
+        
+        elif command!= "":
+            speak("ما فهمت الأمر، جرب تقول الساعة أو افتح يوتيوب")
+
+if __name__ == "__main__":
+    run_assistant()
