@@ -11,3 +11,5 @@
 ### 🚀 التشغيل
 
 **By: Hussein - مطور مساعدات صوتية 🤖**
+> ملاحظة: يحتاج تشغيل على كمبيوتر مع مايكروفون
+> المكتبات: `pip install SpeechRecognition pyttsx3 pyaudio`
